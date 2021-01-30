@@ -1,0 +1,30 @@
+- name: Create Traefik app folder
+  file: 
+    path: /app/traefik/config/conf.d
+    state: directory
+    owner: "{{ ansible_effective_user_id }}"
+    group: "{{ ansible_effective_group_id }}"
+- name: Apply Traefik config
+  template:
+    src: traefik.j2
+    dest: /app/traefik/traefik.toml
+- name: Add ports to firewall
+  ansible.posix.firewalld:
+    port: "{{ item }}"
+    state: enabled
+  loop:
+    - 80/tcp
+    - 8080/tcp
+    - 443/tcp
+- name: Start Traefik
+  containers.podman.podman_container:
+    image: traefik:v2.3
+    recreate: true
+    name: traefik
+    ports:
+      - "8080:8080"
+      - "80:80"
+      - "443:443"
+    volume:
+      - /app/traefik:/etc/traefik:z
+    network: "{{ PROXY_NETWORKS }}"

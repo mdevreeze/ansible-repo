@@ -1,0 +1,14 @@
+- name: Install podman
+  package:
+    name: podman
+    state: latest
+
+- name: Create networks
+  containers.podman.podman_network:
+    name: "{{ item }}"
+  loop: "{{ PODMAN_NETWORKS }}"
+
+- name: Create volumes
+  containers.podman.podman_network:
+    name: "{{ item }}"
+  loop: "{{ PODMAN_VOLUMES }}"

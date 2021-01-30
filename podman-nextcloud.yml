@@ -1,0 +1,9 @@
+- hosts: nextcloud
+  become: true
+  vars_files:
+    - vars/secrets.yml
+  roles:
+    - base
+    - podman
+    - nextcloud
+    - reverse_proxy

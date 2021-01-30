@@ -1,0 +1,9 @@
+- name: Install firewalld
+  package:
+    name: firewalld
+    state: latest
+- name: Enable firewalld
+  systemd:
+    state: started
+    name: firewalld
+    enabled: yes

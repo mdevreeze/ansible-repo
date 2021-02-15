@@ -17,7 +17,7 @@
   containers.podman.podman_container:
     name: nextcloud-app
     recreate: true
-    image: nextcloud:fpm-alpine
+    image: nextcloud:20.0.7-fpm-alpine
     volume:
       - "{{ NEXTCLOUD_VOLUME_NAME }}:/var/www/html"
       - /app/nextcloud/config:/var/www/html/config:z 
@@ -35,7 +35,7 @@
     name: nextcloud-cron
     recreate: true
     entrypoint: /cron.sh
-    image: nextcloud:fpm-alpine
+    image: nextcloud:20.0.7-fpm-alpine
     volume:
       - "{{ NEXTCLOUD_VOLUME_NAME }}:/var/www/html"
       - /app/nextcloud/config:/var/www/html/config:z

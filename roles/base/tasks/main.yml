@@ -2,8 +2,10 @@
   package:
     name: firewalld
     state: latest
+  when: ansible_distribution == 'Fedora'
 - name: Enable firewalld
   systemd:
     state: started
     name: firewalld
     enabled: yes
+  when: ansible_distribution == 'Fedora'

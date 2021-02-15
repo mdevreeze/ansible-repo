@@ -1,0 +1,83 @@
+- hosts: foto-server
+  become: true
+  vars_files:
+    - vars/secrets.yml
+  vars:
+    samba_shares_root: /srv/shares
+    samba_netbios_name: FOTO-SERVER
+    samba_server_string: 'Welcome to the photo server'
+    samba_workgroup: THUIS
+    # samba_global_include: global-include.conf
+
+    samba_load_homes: true
+    samba_load_printers: false
+    samba_create_varwww_symlinks: true
+
+    samba_log: /var/log/samba.log
+    samba_log_size: 60000
+    samba_log_level: '3 passdb:5 auth:10 winbind:2 '    
+    samba_users:
+      - name: "michael"
+        password: "{{ SAMBA_USER_PASSWORD }}"
+    samba_shares:
+      - name: photos
+        comment: My photo share
+        write_list: "+michael"
+  roles:
+    - base
+    - podman
+    - bertvv.samba 
+  tasks:
+    - name: Create Photoprism storage folder
+      file:
+        path: /app/photoprism/storage
+        state: directory
+    - name: Create Photoprism container
+      containers.podman.podman_container:
+        name: photoprism
+        image: photoprism/photoprism
+        volume:
+          - /app/photoprism/storage:/photoprism/storage
+          - /srv/shares/photos:/photoprism/originals
+        ports:
+          - 80:2342
+        env:
+          PHOTOPRISM_DATABASE_DRIVER: "mysql"
+          PHOTOPRISM_DATABASE_SERVER: "{{ groups['db'][0] }}:3306"
+          PHOTOPRISM_DATABASE_NAME: "photoprism"
+          PHOTOPRISM_DATABASE_USER: "photoprism"
+          PHOTOPRISM_DATABASE_PASSWORD: "{{ PHOTOPRISM_MYSQL_PASSWORD_SECRET }}"
+          PHOTOPRISM_ADMIN_PASSWORD: "{{ PHOTOPRISM_PASSWORD_SECRET }}"
+          PHOTOPRISM_UPLOAD_NSFW: "true"
+          PHOTOPRISM_DETECT_NSFW: "false"
+
+- hosts: db
+  become: true
+  remote_user: root
+  vars_files:
+    - vars/secrets.yml
+  tasks:
+    - name: Install bottle python package
+      package:
+        name: python3-pip
+    - name: Install bottle python package
+      pip:
+        name: PyMySQL
+    - name: Create database
+      community.mysql.mysql_db:
+        config_file: /etc/mysql/my.cnf
+        login_user: "{{ MYSQL_USER_SECRET }}"
+        login_password: "{{ MYSQL_PASSWORD_SECRET }}"
+        name: photoprism
+        state: present
+    - name: Create database user
+      community.mysql.mysql_user:
+        config_file: /etc/mysql/my.cnf
+        login_user: "{{ MYSQL_USER_SECRET }}"
+        login_password: "{{ MYSQL_PASSWORD_SECRET }}"
+        name: photoprism
+        state: present
+        password: "{{ PHOTOPRISM_MYSQL_PASSWORD_SECRET }}"
+        host: "{{ groups['foto-server'][0] }}"
+        priv: 'photoprism.*:ALL'
+

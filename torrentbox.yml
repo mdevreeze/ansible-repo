@@ -10,7 +10,7 @@
     - geerlingguy.nfs
   vars:
     nfs_exports:
-      - /mnt/1tb
+      - "/mnt/1tb *(ro) 192.168.1.2(rw)"
   tasks:
     - name: Open NFS ports
       ansible.posix.firewalld:

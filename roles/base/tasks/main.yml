@@ -9,3 +9,12 @@
     name: firewalld
     enabled: yes
   when: ansible_distribution == 'Fedora'
+- name: Install favorite pacakges
+  package:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - vim
+    - htop
+    - iotop
+    - tmux

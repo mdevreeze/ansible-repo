@@ -5,6 +5,7 @@
   roles:
     - base
     - podman
+    - vpn
   tasks:
     - name: Create torrent config folder
       file:

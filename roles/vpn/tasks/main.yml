@@ -1,0 +1,18 @@
+- name: Install openvpn
+  # https://github.com/containers/podman/issues/8227
+  package:
+    name: openvpn
+    state: latest
+- name: Copy Openvpn config
+  copy:
+    src: amsterdam.ovpn
+    dest: /etc/openvpn/client/amsterdam.conf
+- name: Create Auth file
+  template:
+    src: auth.txt.j2
+    dest: /etc/openvpn/client/auth.txt
+- name: Start connection
+  ansible.builtin.systemd:
+    name: openvpn-client@amsterdam
+    state: started
+    enabled: yes

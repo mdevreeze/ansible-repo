@@ -1,3 +1,4 @@
 secrets.yml
 inventory
 roles/nextcloud/files/traefik-config.toml
+roles/vpn/files/amsterdam.ovpn

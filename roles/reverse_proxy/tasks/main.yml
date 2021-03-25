@@ -18,7 +18,7 @@
     - 443/tcp
 - name: Start Traefik
   containers.podman.podman_container:
-    image: traefik:v2.3
+    image: traefik:v2.4.8
     recreate: true
     name: traefik
     ports:

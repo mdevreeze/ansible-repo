@@ -1,0 +1,9 @@
+- hosts: automation
+  become: true
+  vars_files:
+    - vars/secrets.yml
+  roles:
+    - base
+    - podman
+    - mqtt
+    - node-red

@@ -1,0 +1,33 @@
+- name: Create torrent config folder
+  file:
+    path: /app/mqtt
+    state: directory
+    owner: "1883"
+    group: "1883"
+- name: Copy mosquitto config
+  copy:
+    src: mosquitto.conf
+    dest: /app/mqtt/mosquitto.conf
+    owner: "1883"
+    group: "1883"
+- name: mosquitto auth
+  template:
+    src: auth.txt.j2
+    dest: /app/mqtt/auth.txt
+- name: Open firewall ports
+  ansible.posix.firewalld:
+    port: "{{ item }}"
+    state: enabled
+  loop:
+    - 1883/tcp
+    - 9001/tcp
+- name: Create mqtt container
+  containers.podman.podman_container:
+    name: mqtt
+    image: eclipse-mosquitto:2.0.10
+    recreate: yes
+    volume:
+      - /app/mqtt:/mosquitto/config:z
+    ports:
+      - 1883:1883
+      - 9001:9001

@@ -1,0 +1,20 @@
+- name: Create torrent config folder
+  file:
+    path: /app/node-red/
+    state: directory
+    owner: "1000"
+    group: "1000"
+- name: Open firewall ports
+  ansible.posix.firewalld:
+    port: "1880/tcp"
+    state: enabled
+- name: Create node-red container
+  containers.podman.podman_container:
+    name: node-red
+    image: nodered/node-red
+    user: 1000
+    recreate: yes
+    volume:
+      - /app/node-red:/data:z
+    ports:
+      - 1880:1880

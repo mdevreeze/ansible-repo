@@ -2,7 +2,6 @@
   package:
     name: podman
     state: latest
-
 - name: Install runc
   # https://github.com/containers/podman/issues/8227
   package:

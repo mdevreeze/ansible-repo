@@ -1,0 +1,20 @@
+watch:
+  workers: 10
+  schedule: "0 */6 * * *"
+  firstCheckNotif: false
+
+providers:
+  file:
+    filename: /custom-images.yml
+
+
+notif:
+  mail:
+    host: {{ EMAIL_HOST }}
+    port: 465
+    ssl: true
+    insecureSkipVerify: false
+    from: {{ EMAIL_ADDRESS }}
+    to: {{ EMAIL_DUIN_TO_EMAIL }}
+    password: {{ EMAIL_PASSWORD }}
+    username: {{ EMAIL_ADDRESS }}

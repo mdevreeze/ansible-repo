@@ -2,9 +2,9 @@
 - name: photoprism/photoprism
 - name: nodered/node-red
 - name: linuxserver/rutorrent
-- name: homeassistant/raspberrypi3-homeassistant
-- name: koenkk/zigbee2mqtt
-- name: nextcloud
+- name: homeassistant/raspberrypi3-homeassistant:stable
+- name: koenkk/zigbee2mqtt:latest
+- name: nextcloud:stable
 - name: redis
 - name: traefik
 - name: crazymax/diun

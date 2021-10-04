@@ -7,7 +7,7 @@
     group: "82"
 - name: Start Redis container
   containers.podman.podman_container:
-    image: redis:6.2.4-alpine
+    image: redis:6.2.5-alpine
     name: redis
     command: "redis-server --requirepass {{ REDIS_PASSWORD_SECRET }}"
     recreate: true
@@ -17,7 +17,7 @@
   containers.podman.podman_container:
     name: nextcloud-app
     recreate: true
-    image: nextcloud:22.0.0-fpm-alpine
+    image: nextcloud:22.2.0-fpm-alpine
     volume:
       - "{{ NEXTCLOUD_VOLUME_NAME }}:/var/www/html"
       - /app/nextcloud/config:/var/www/html/config:z 
@@ -35,7 +35,7 @@
     name: nextcloud-cron
     recreate: true
     entrypoint: /cron.sh
-    image: nextcloud:22.0.0-fpm-alpine
+    image: nextcloud:22.2.0-fpm-alpine
     volume:
       - "{{ NEXTCLOUD_VOLUME_NAME }}:/var/www/html"
       - /app/nextcloud/config:/var/www/html/config:z

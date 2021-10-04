@@ -22,10 +22,13 @@
       file:
         path: /app/photoprism/storage
         state: directory
+    - name: Pull latest Photoprism image
+      containers.podman.podman_image:
+        name: photoprism/photoprism:latest
     - name: Create Photoprism container
       containers.podman.podman_container:
         name: photoprism
-        image: photoprism/photoprism:20210523
+        image: photoprism/photoprism:latest
         volume:
           - /app/photoprism/storage:/photoprism/storage
           - /srv/shares/photos:/photoprism/originals

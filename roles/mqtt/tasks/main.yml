@@ -24,7 +24,7 @@
 - name: Create mqtt container
   containers.podman.podman_container:
     name: mqtt
-    image: eclipse-mosquitto:2.0.12
+    image: eclipse-mosquitto:2.0.14
     recreate: yes
     volume:
       - /app/mqtt:/mosquitto/config:z

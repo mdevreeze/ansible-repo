@@ -1,0 +1,43 @@
+homeassistant: true
+permit_join: true
+frontend:
+  # Optional, default 8080
+  port: 20000
+  # Optional, default 0.0.0.0
+  # host: 192.168.1.101
+  # Optional, enables authentication, disabled by default
+  auth_token: {{ MQTT_PASSWORD }}
+advanced:
+   ikea_ota_use_test_url: true
+mqtt:
+  base_topic: zigbee2mqtt
+  server: 'mqtt://michael:{{ MQTT_PASSWORD }}@192.168.1.107:1883'
+serial:
+  port: /dev/ttyACM0
+devices:
+  '0x90fd9ffffe677527':
+    friendly_name: baskamer-sensor
+  '0xccccccfffe37b5b1':
+    friendly_name: keuken
+  '0x086bd7fffe205e37':
+    friendly_name: badkamer
+  '0xbc33acfffe5ef7df':
+    friendly_name: kookplaat
+  '0x90fd9ffffe4c739f':
+    friendly_name: losse-lamp
+  '0x842e14fffea67ce0':
+    friendly_name: woonkamer
+  '0x086bd7fffe292a97':
+    friendly_name: '0x086bd7fffe292a97'
+  '0x90fd9ffffe526ad9':
+    friendly_name: knop1
+  '0x680ae2fffe7940fe':
+    friendly_name: keuken-knop-dim
+  '0xbc33acfffe0d3238':
+    friendly_name: badkamer-knop-dim
+  '0x842e14fffe1a948b':
+    friendly_name: woonkamer-knop-dim
+  '0xbc33acfffe5e1b36':
+    friendly_name: stekker-leds
+  '0x680ae2fffe2f342f':
+    friendly_name: '0x680ae2fffe2f342f'

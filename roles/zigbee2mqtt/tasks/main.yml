@@ -1,0 +1,37 @@
+- name: Create zigbee2mqtt config folder
+  become: true
+  file:
+    path: /app/zigbee2mqtt/
+    state: directory
+    owner: "1000"
+    group: "1000"
+- name: Open firewall ports
+  become: true
+  ansible.posix.firewalld:
+    port: "20000/tcp"
+    state: enabled
+- name: Apply config
+  template:
+    src: configuration.yaml.j2
+    dest: /app/zigbee2mqtt/configuration.yaml
+- name: Pull latest image
+  become: true
+  containers.podman.podman_image:
+    name: koenkk/zigbee2mqtt
+- name: Create zigbee2mqtt container
+  become: true
+  containers.podman.podman_container:
+    name: zigbee2mqtt
+    image: koenkk/zigbee2mqtt
+    restart_policy: always
+    device: /dev/ttyACM0
+    env:
+      TZ: Europe/Amsterdam
+    user: "1000"
+    recreate: yes
+    privileged: true
+    volume:
+      - /app/zigbee2mqtt:/app/data:z
+      - /run/udev:/run/udev:ro
+    ports:
+      - "20000:20000"

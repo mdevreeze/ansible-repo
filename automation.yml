@@ -2,8 +2,16 @@
   become: true
   vars_files:
     - vars/secrets.yml
+  vars:
+    TUNNEL_NAME: automation
+    TUNNEL_SERVICES:
+      - { port: 8123, hostname: "hs.michaeldv.nl" }
+      - { port: 1880, hostname: "nr.michaeldv.nl" }
   roles:
     - base
     - podman
     - mqtt
+    - zigbee2mqtt
+    - home-assistant
     - node-red
+    - cloudflare-tunnel

@@ -2,9 +2,11 @@
   become: true
   vars_files:
     - vars/secrets.yml
+  vars:
+    TUNNEL_NAME: nxtcld20
   roles:
     - base
     - podman
     - nextcloud
-    - reverse_proxy
     - diun
+    - cloudflare-tunnel

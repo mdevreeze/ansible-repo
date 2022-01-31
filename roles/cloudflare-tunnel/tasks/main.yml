@@ -1,0 +1,72 @@
+# - name: Install cloudflared
+#   apt: 
+#     deb: https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+#   when: ansible_facts['os_family'] == "Debian"
+
+- name: Install cloudflared
+  apt: 
+    deb: "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-{{ ansible_architecture }}.deb"
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Install cloudflared
+  become: true
+  yum: 
+    name: "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-{{ ansible_architecture }}.rpm"
+    state: present
+    disable_gpg_check: true
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Create torrent config folder
+  become: false
+  file:
+    path: $HOME/.cloudflared
+    state: directory
+
+- name: Copy cloudflare login credentials pem file
+  become: false
+  copy:
+    content: '{{ CLOUDFLARE_PEM }}'
+    dest: $HOME/.cloudflared/cert.pem
+  
+- name: Find installed tunnels
+  become: false
+  find:
+    paths: $HOME/.cloudflared
+    contains: ".*\"TunnelName\":\"{{ TUNNEL_NAME }}\".*"
+    file_type: file
+    patterns: "*.json"
+  register: files_matched
+
+- name: DEBUG files_matched
+  become: false
+  debug:
+    var: files_matched
+
+- name: Create tunnel
+  become: false
+  command: cloudflare tunnel create {{ TUNNEL_NAME }}
+  when: files_matched.matched == 0
+
+- name: Get tunnel
+  become: false
+  command: cloudflared tunnel list --name {{ TUNNEL_NAME }} -o json
+  register: tunnel_result
+
+- name: Get tunnel id
+  become: false
+  set_fact: 
+    TUNNEL_ID: "{{ (tunnel_result.stdout | from_json)[0].id }}"
+
+- name: DEBUG tunndel id
+  become: false
+  debug:
+    var: TUNNEL_ID
+
+- name: Kill previous tunnels
+  become: false
+  command: sh -c "tmux has-session -t {{ TUNNEL_NAME }} && tmux kill-session -t {{ TUNNEL_NAME }}"
+  ignore_errors: yes
+
+- name: Start tunnel 
+  become: false
+  command: sh -c "tmux new-session -d -s {{ TUNNEL_NAME }} cloudflared tunnel run -cred-file $HOME/.cloudflared/{{ TUNNEL_ID }}.json {{ TUNNEL_ID }}"

@@ -57,12 +57,9 @@
     name: nextcloud-web
     image: nginx:alpine
     recreate: true
+    ports:
+      - "8080:80"
     volume:
       - /app/nextcloud/nginx.conf:/etc/nginx/nginx.conf:z
       - "{{ NEXTCLOUD_VOLUME_NAME }}:/var/www/html:ro"
     network: "{{ NEXTCLOUD_NEXTCLOUD_NAME }}"
-- name: Reverse proxy config
-  copy:
-    src: traefik-config.toml
-    dest: /app/traefik/conf.d/nextcloud.toml
-

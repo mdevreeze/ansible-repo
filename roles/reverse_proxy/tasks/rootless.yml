@@ -1,7 +1,0 @@
-# for non root traefik container
-- name: Allow non root for privileged ports
-  ansible.posix.sysctl:
-    # non root traefik container need access to privileged ports
-    name: net.ipv4.ip_unprivileged_port_start
-    value: "80"
-    state: present

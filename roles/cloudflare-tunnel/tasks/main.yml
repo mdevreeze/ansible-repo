@@ -27,49 +27,22 @@
   copy:
     content: '{{ CLOUDFLARE_PEM }}'
     dest: $HOME/.cloudflared/cert.pem
-  
+
 - name: Create tunnel
   become: false
-  command: cloudflared tunnel create {{ TUNNEL_NAME }}
+  command: cloudflared tunnel create -o json {{ TUNNEL_NAME }}
   ignore_errors: true
-
-- name: Find installed tunnels
-  become: false
-  find:
-    paths: $HOME/.cloudflared
-    contains: ".*\"TunnelName\":\"{{ TUNNEL_NAME }}\".*"
-    file_type: file
-    patterns: "*.json"
-  register: files_matched
-
-- name: DEBUG files_matched
-  become: false
-  debug:
-    var: files_matched
-
-- name: Set tunnel config file
-  set_fact: 
-    TUNNEL_CREDENTIALS_FILE: "{{ files_matched.files[0].path }}"
 
 - name: Get tunnel
   become: false
   command: cloudflared tunnel list --name {{ TUNNEL_NAME }} -o json
   register: tunnel_result
 
-- name: Get tunnel id
+- name: Get tunnel facts
   become: false
   set_fact: 
     TUNNEL_ID: "{{ (tunnel_result.stdout | from_json)[0].id }}"
-
-- name: DEBUG tunnel id
-  become: false
-  debug:
-    var: TUNNEL_ID
-
-
-- name: Debug tunnel config 
-  debug:
-    var: TUNNEL_CREDENTIALS_FILE
+    TUNNEL_CREDENTIALS_FILE: "./{{ (tunnel_result.stdout | from_json)[0].id }}.json"
 
 - name: Add configuration
   become: false
@@ -85,3 +58,7 @@
 - name: Start tunnel 
   become: false
   command: sh -c "tmux new-session -d -s {{ TUNNEL_NAME }} cloudflared tunnel run"
+
+- name: Reminder
+  ansible.builtin.debug:
+    msg: Make sure DNS CNAME records are added to the tunnels in the Cloudflare DNS dashboard

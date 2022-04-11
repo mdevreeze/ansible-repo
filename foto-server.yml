@@ -24,11 +24,11 @@
         state: directory
     - name: Pull latest Photoprism image
       containers.podman.podman_image:
-        name: photoprism/photoprism:latest
+        name: docker.io/photoprism/photoprism:20220121
     - name: Create Photoprism container
       containers.podman.podman_container:
         name: photoprism
-        image: photoprism/photoprism:latest
+        image: docker.io/photoprism/photoprism:20220121
         volume:
           - /app/photoprism/storage:/photoprism/storage
           - /srv/shares/photos:/photoprism/originals

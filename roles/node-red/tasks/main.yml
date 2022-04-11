@@ -11,7 +11,7 @@
 - name: Create node-red container
   containers.podman.podman_container:
     name: node-red
-    image: nodered/node-red:2.1.4-1
+    image: nodered/node-red:2.2.2-12
     user: 1000
     recreate: yes
     volume:

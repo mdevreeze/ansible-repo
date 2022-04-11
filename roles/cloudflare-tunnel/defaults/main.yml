@@ -1,0 +1,4 @@
+
+TUNNEL_NAME: testtunnel
+TUNNEL_SERVICES:
+  - { port: 80, hostname: "some-domain.nl" }

@@ -22,7 +22,7 @@
   become: true
   containers.podman.podman_container:
     name: zigbee2mqtt
-    image: koenkk/zigbee2mqtt
+    image: koenkk/zigbee2mqtt:1.25.0
     restart_policy: always
     device: /dev/ttyACM0
     env:

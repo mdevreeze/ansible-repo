@@ -13,12 +13,12 @@
 - name: Pull latest image
   become: true
   containers.podman.podman_image:
-    name: homeassistant/home-assistant:latest
+    name: homeassistant/home-assistant:2022.4
 - name: Create home-assistant container
   become: true
   containers.podman.podman_container:
     name: home-assistant
-    image: homeassistant/home-assistant:latest
+    image: homeassistant/home-assistant:2022.4
     restart_policy: always
     env:
       TZ: Europe/Amsterdam

@@ -5,8 +5,8 @@
   vars:
     TUNNEL_NAME: automation
     TUNNEL_SERVICES:
-      - { port: 8123, hostname: "hs.michaeldv.nl" }
-      - { port: 1880, hostname: "nr.michaeldv.nl" }
+      - { port: 8123, hostname: "{{ HOMEASSISTANT_HOST }}" }
+      - { port: 1880, hostname: "{{ NODERED_HOST }}" }
   roles:
     - base
     - podman

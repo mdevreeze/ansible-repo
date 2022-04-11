@@ -31,7 +31,7 @@
 - name: Create tunnel
   become: false
   command: cloudflared tunnel create {{ TUNNEL_NAME }}
-  ignore_errors: yes
+  ignore_errors: true
 
 - name: Find installed tunnels
   become: false
@@ -80,7 +80,7 @@
 - name: Kill previous tunnels
   become: false
   command: sh -c "tmux has-session -t {{ TUNNEL_NAME }} && tmux kill-session -t {{ TUNNEL_NAME }}"
-  ignore_errors: yes
+  ignore_errors: true
 
 - name: Start tunnel 
   become: false

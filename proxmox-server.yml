@@ -3,18 +3,16 @@
   vars_files:
     - vars/secrets.yml
   vars:
-    samba_shares_root: /srv/shares
-    samba_netbios_name: PROXMOX
-    samba_workgroup: THUIS
-
-    samba_users:
-      - name: "michael"
-        password: "{{ SAMBA_USER_PASSWORD }}"
-    samba_shares:
-      - name: drives
-        comment: Media drives
-        write_list: "+michael"
-        valid_users: "+michael"
+    ansible_python_interpreter: /usr/bin/python3
+    nfs_exports:
+      - "/WD-Reds/fotoos 192.168.1.2(rw) 192.168.103(rw) 192.168.1.105(rw)"
+      - "/WD-Reds/big 192.168.103(rw)"
   roles:
-    - base
-    - bertvv.samba 
+    - geerlingguy.nfs
+  tasks:
+    - name: NFS utility present debian-like
+      ansible.builtin.apt:
+        name:
+          - nfs-common
+          - nfs4-acl-tools
+        state: present

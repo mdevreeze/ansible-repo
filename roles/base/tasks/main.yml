@@ -18,3 +18,19 @@
     - htop
     - iotop
     - tmux
+
+- name: NFS utility present redhat-like
+  ansible.builtin.yum:
+    name:
+      - nfs-utils
+      - nfs4-acl-tools
+    state: present
+  when: ansible_os_family == 'RedHat'
+
+- name: NFS utility present debian-like
+  ansible.builtin.apt:
+    name:
+      - nfs-common
+      - nfs4-acl-tools
+    state: present
+  when: ansible_os_family == 'Debian'

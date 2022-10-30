@@ -42,7 +42,7 @@
   become: false
   set_fact: 
     TUNNEL_ID: "{{ (tunnel_result.stdout | from_json)[0].id }}"
-    TUNNEL_CREDENTIALS_FILE: "./{{ (tunnel_result.stdout | from_json)[0].id }}.json"
+    TUNNEL_CREDENTIALS_FILE: "{{ (tunnel_result.stdout | from_json)[0].id }}.json"
 
 - name: Add configuration
   become: false

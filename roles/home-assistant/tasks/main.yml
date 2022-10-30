@@ -10,15 +10,11 @@
   ansible.posix.firewalld:
     port: "8123/tcp"
     state: enabled
-- name: Pull latest image
-  become: true
-  containers.podman.podman_image:
-    name: homeassistant/home-assistant:2022.4
 - name: Create home-assistant container
   become: true
   containers.podman.podman_container:
     name: home-assistant
-    image: homeassistant/home-assistant:2022.4
+    image: docker.io/homeassistant/home-assistant:2022.10
     restart_policy: always
     env:
       TZ: Europe/Amsterdam

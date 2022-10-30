@@ -1,3 +1,0 @@
-- name: Set permissions config mount dir
-  # 82 is www-data user id from the nextcloud container
-  command: podman unshare chown 33 /app/nextcloud/config

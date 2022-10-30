@@ -1,5 +1,5 @@
 tunnel: {{ TUNNEL_ID }}
-credentials-file: {{ TUNNEL_CREDENTIALS_FILE }}
+credentials-file: {{ lookup('env','HOME') }}/.cloudflared/{{ TUNNEL_CREDENTIALS_FILE }}
 
 
 ingress:

@@ -8,13 +8,23 @@
   ansible.posix.firewalld:
     port: "1880/tcp"
     state: enabled
+- name: Copy systemd unit file
+  copy:
+    src: node-red.service
+    dest: /etc/systemd/system/node-red.service
 - name: Create node-red container
   containers.podman.podman_container:
     name: node-red
-    image: docker.io/nodered/node-red:2.2.3-12
+    image: docker.io/nodered/node-red:2.2.3-16
     user: 1000
+    state: present
     recreate: yes
     volume:
       - /app/node-red:/data:z
     ports:
       - 1880:1880
+- name: Start node-red systemd unit
+  systemd:
+    name: node-red
+    state: started
+    enabled: yes

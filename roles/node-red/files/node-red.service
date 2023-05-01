@@ -1,0 +1,11 @@
+[Unit]
+Description=My node-red container
+Requires=podman.service
+After=podman.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/podman start node-red
+
+[Install]
+WantedBy=multi-user.target

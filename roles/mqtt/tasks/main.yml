@@ -21,9 +21,14 @@
   loop:
     - 1883/tcp
     - 9001/tcp
+- name: Copy systemd unit file
+  copy:
+    src: zigbee2mqtt.service
+    dest: /etc/systemd/system/zigbee2mqtt.service
 - name: Create mqtt container
   containers.podman.podman_container:
     name: mqtt
+    state: present
     image: docker.io/eclipse-mosquitto:2.0.15
     recreate: yes
     volume:
@@ -31,3 +36,8 @@
     ports:
       - 1883:1883
       - 9001:9001
+- name: Enable and start mqtt systemd unit
+  systemd:
+    name: mqtt 
+    state: started
+    enabled: yes

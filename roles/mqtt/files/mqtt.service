@@ -1,0 +1,11 @@
+[Unit]
+Description=My mqtt container
+Requires=podman.service
+After=podman.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/podman start mqtt
+
+[Install]
+WantedBy=multi-user.target

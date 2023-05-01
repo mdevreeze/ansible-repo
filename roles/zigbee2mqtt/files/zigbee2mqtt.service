@@ -1,0 +1,12 @@
+[Unit]
+Description=My zigbee2mqtt container
+Requires=podman.service
+After=podman.service
+
+[Service]
+Restart=always
+ExecStartPre=/bin/chmod 777 /dev/ttyACM0
+ExecStart=/usr/bin/podman start zigbee2mqtt
+
+[Install]
+WantedBy=multi-user.target

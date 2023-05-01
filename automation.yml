@@ -12,6 +12,5 @@
     - podman
     - mqtt
     - zigbee2mqtt
-    - home-assistant
     - node-red
     - cloudflare-tunnel

@@ -9,6 +9,9 @@
     state: latest
   when: ansible_distribution == 'Ubuntu'
 
+# todo add unqualified-seach-registries here 
+# https://www.redhat.com/sysadmin/manage-container-registries
+
 - name: Create networks
   containers.podman.podman_network:
     name: "{{ item }}"

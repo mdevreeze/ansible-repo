@@ -6,7 +6,7 @@
     ansible_python_interpreter: /usr/bin/python3
     nfs_exports:
       - "/WD-Reds/fotoos 192.168.1.2(rw) 192.168.103(rw) 192.168.1.105(rw)"
-      - "/WD-Reds/big 192.168.103(rw)"
+      - "/WD-Reds/big 192.168.103(rw) 192.168.105(rw)"
   roles:
     - geerlingguy.nfs
   tasks:

@@ -11,6 +11,6 @@
     - base
     - podman
     - mqtt
-    - zigbee2mqtt
     - node-red
+    - zigbee2mqtt
     - cloudflare-tunnel

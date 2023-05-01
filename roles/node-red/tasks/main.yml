@@ -1,4 +1,4 @@
-- name: Create torrent config folder
+- name: Create node-red config folder
   file:
     path: /app/node-red/
     state: directory
@@ -25,6 +25,7 @@
       - 1880:1880
 - name: Start node-red systemd unit
   systemd:
+    daemon_reload: yes
     name: node-red
     state: started
     enabled: yes

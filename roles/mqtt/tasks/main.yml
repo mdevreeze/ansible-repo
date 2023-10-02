@@ -29,7 +29,7 @@
   containers.podman.podman_container:
     name: mqtt
     state: present
-    image: docker.io/eclipse-mosquitto:2.0.15
+    image: docker.io/eclipse-mosquitto:2.0.18
     recreate: yes
     volume:
       - /app/mqtt:/mosquitto/config:z

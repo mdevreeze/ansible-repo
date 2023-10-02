@@ -15,29 +15,47 @@ mqtt:
 serial:
   port: /dev/ttyACM0
 devices:
-  '0x90fd9ffffe677527':
-    friendly_name: baskamer-sensor
-  '0xccccccfffe37b5b1':
-    friendly_name: keuken
-  '0x086bd7fffe205e37':
-    friendly_name: badkamer
-  '0xbc33acfffe5ef7df':
-    friendly_name: kookplaat
-  '0x90fd9ffffe4c739f':
-    friendly_name: losse-lamp
-  '0x842e14fffea67ce0':
-    friendly_name: woonkamer
-  '0x086bd7fffe292a97':
-    friendly_name: '0x086bd7fffe292a97'
+
+  # Gang
+  '0xcc86ecfffedaf5a2':
+    friendly_name: 'gang-sensor'
+ 
+  # Kantoor
   '0x90fd9ffffe526ad9':
-    friendly_name: knop1
-  '0x680ae2fffe7940fe':
-    friendly_name: keuken-knop-dim
-  '0xbc33acfffe0d3238':
-    friendly_name: badkamer-knop-dim
-  '0x842e14fffe1a948b':
-    friendly_name: woonkamer-knop-dim
+    friendly_name: 'kantoor-knop'
+  '0xbc026efffec7bdaa':
+    friendly_name: 'kantoor-lamp-1'
+  '0xbc026efffec83d4a':
+    friendly_name: 'kantoor-lamp-2'
+  '0x6c5cb1fffe03fe21':
+    friendly_name: 'kantoor-lamp-3'
+
+  # Woonkamer
+  '0x8cf681fffe44edfb':
+    friendly_name: 'woonkamer-knop'
+  '0x9035eafffe26cc55':
+    friendly_name: 'woonkamer-lamp-3'
+  '0x9035eafffe286603':
+    friendly_name: 'woonkamer-lamp-3'
+  '0x9035eafffe2a4ad6':
+    friendly_name: 'woonkamer-lamp-3'
+  '0x847127fffeca84ff':
+    friendly_name: 'woonkamer-aqi'
+  '0x04cd15fffe7f830e':
+    friendly_name: 'livarno-los'
+
+  # Slaapkamer
+  '0x842e14fffe1a948b'
+    friendly_name: 'slaapkamer-knop'
+  '0xccccccfffe37b5b1':
+    friendly_name: 'slaapkamer-lamp-1'
+  '0x842e14fffea67ce0':
+    friendly_name: 'slaapkamer-lamp-2'
+
+  # Keuken
   '0xbc33acfffe5e1b36':
-    friendly_name: stekker-leds
-  '0x680ae2fffe2f342f':
-    friendly_name: '0x680ae2fffe2f342f'
+    friendly_name: 'keuken-leds'
+  '0x9035eafffe26d935':
+    friendly_name: 'keuken-lamp-1'
+  '0x8cf681fffe6d528e':
+    friendly_name: 'keuken-lamp-2'

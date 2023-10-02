@@ -1,12 +1,13 @@
 [Unit]
-Description=My zigbee2mqtt container
-Requires=podman.service
-After=podman.service
+Description=Zigbee2mqtt podman container
+After=network.target
 
 [Service]
 Restart=always
 ExecStartPre=/bin/chmod 777 /dev/ttyACM0
-ExecStart=/usr/bin/podman start zigbee2mqtt
+ExecStart=/usr/bin/podman start -a zigbee2mqtt
+ExecStop=/usr/bin/podman start -t 2 zigbee2mqtt
+RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target

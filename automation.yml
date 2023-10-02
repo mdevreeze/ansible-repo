@@ -13,4 +13,3 @@
     - mqtt
     - node-red
     - zigbee2mqtt
-    - cloudflare-tunnel

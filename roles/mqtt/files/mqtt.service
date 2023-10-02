@@ -1,11 +1,12 @@
 [Unit]
-Description=My mqtt container
-Requires=podman.service
-After=podman.service
+Description=Mqtt podman container
+After=network.target
 
 [Service]
 Restart=always
-ExecStart=/usr/bin/podman start mqtt
+ExecStart=/usr/bin/podman start -a mqtt
+ExecStop=/usr/bin/podman stop -t 2 mqtt
+RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target

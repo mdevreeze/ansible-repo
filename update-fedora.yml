@@ -1,0 +1,28 @@
+---
+- name: Update Fedora to the Next Release
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Upgrade all packages
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest  # noqa package-latest
+
+    - name: Reboot server after package upgrade
+      ansible.builtin.reboot:
+
+    - name: Install dnf-plugin-system-upgrade package
+      ansible.builtin.dnf:
+        name: dnf-plugin-system-upgrade
+        state: latest # noqa package-latest
+
+    - name: Download latest Fedora Release
+      ansible.builtin.shell: dnf -v -y system-upgrade download --releasever=38 # noqa no-changed-when
+      args:
+        executable: /bin/bash
+
+    - name: Perform system upgrade
+      ansible.builtin.shell: dnf system-upgrade reboot # noqa no-changed-when
+      args:
+        executable: /bin/bash

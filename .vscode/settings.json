@@ -7,5 +7,6 @@
     "nextcloud",
     "podman",
     "posix"
-  ]
+  ],
+  "ansible.python.interpreterPath": "/bin/python"
 }

@@ -27,7 +27,7 @@
   become: true
   containers.podman.podman_container:
     name: zigbee2mqtt
-    image: docker.io/koenkk/zigbee2mqtt:1.33.2
+    image: docker.io/koenkk/zigbee2mqtt:1.35.1
     restart_policy: always
     state: present
     device: /dev/ttyACM0:/dev/ttyACM0:z

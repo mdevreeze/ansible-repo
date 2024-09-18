@@ -13,15 +13,11 @@ mqtt:
   base_topic: zigbee2mqtt
   server: 'mqtt://michael:{{ MQTT_PASSWORD }}@192.168.1.107:1883'
 serial:
-  port: /dev/ttyACM0
+  port: /dev/ttyUSB0
 devices:
 
-  # Gang
-  '0xcc86ecfffedaf5a2':
-    friendly_name: 'gang-sensor'
- 
   # Kantoor
-  '0x90fd9ffffe526ad9':
+  '0x842e14fffe1a948b':
     friendly_name: 'kantoor-knop'
   '0xbc026efffec7bdaa':
     friendly_name: 'kantoor-lamp-1'
@@ -31,6 +27,8 @@ devices:
     friendly_name: 'kantoor-lamp-3'
   '0xb4e3f9fffee16060':
     friendly_name: 'bureau-lamp'
+  '0x38398ffffe0fa154':
+    friendly_name: 'server-stekker'
 
   # Woonkamer
   '0x8cf681fffe44edfb':
@@ -45,15 +43,17 @@ devices:
     friendly_name: 'woonkamer-aqi'
   '0x04cd15fffe7f830e':
     friendly_name: 'livarno-los'
-  '0x540f57fffe2c2446':
+  '0xa46dd4fffe53e983':
     friendly_name: 'eettafel-lamp'
-  '0x2c1165fffee1abfb':
-    friendly_name: 'woonkamer-sfeerlamp' 
   '0xbc33acfffe5e1b36':
     friendly_name: 'woonkamer-leeslamp'
+  '0x0c4314fffe57f8e2':
+    friendly_name: 'woonkamer-sfeerlamp'
+  '0xd44867fffe48e21e':
+    friendly_name: 'woonkamer-sensor'
 
   # Slaapkamer
-  '0x842e14fffe1a948b':
+  '0x842712fffec87187':
     friendly_name: 'slaapkamer-knop'
   '0xccccccfffe37b5b1':
     friendly_name: 'slaapkamer-lamp-1'
@@ -69,6 +69,8 @@ devices:
     friendly_name: 'keuken-knop'
 
   # Gang
+  '0xcc86ecfffedaf5a2':
+    friendly_name: 'gang-sensor'
   '0xa4c1384e554f96d7':
     friendly_name: 'wasmachine-stroom'
   '0x540f57fffeecafd0':
@@ -78,4 +80,4 @@ devices:
   '0xbc33acfffe0d3238':
     friendly_name: 'gang-knop'
   '0x680ae2fffe2f342f':
-    friendly_name: 'duer-knop'
+    friendly_name: 'deur-knop'

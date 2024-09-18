@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Restart=always
-ExecStartPre=/bin/chmod 777 /dev/ttyACM0
+ExecStartPre=/bin/chmod 777 /dev/ttyUSB0
 ExecStart=/usr/bin/podman start -a zigbee2mqtt
 ExecStop=/usr/bin/podman start -t 2 zigbee2mqtt
 RestartSec=5s

@@ -14,9 +14,9 @@
   template:
     src: configuration.yaml.j2
     dest: /app/zigbee2mqtt/configuration.yaml
-- name: Set permissions /dev/ttyACM0
+- name: Set permissions /dev/ttyUSB0
   ansible.builtin.file:
-    path: /dev/ttyACM0
+    path: /dev/ttyUSB0
     state: file
     mode: '0777'
 - name: Copy systemd unit file
@@ -27,10 +27,10 @@
   become: true
   containers.podman.podman_container:
     name: zigbee2mqtt
-    image: docker.io/koenkk/zigbee2mqtt:1.35.1
+    image: docker.io/koenkk/zigbee2mqtt:1.40.1
     restart_policy: always
     state: present
-    device: /dev/ttyACM0:/dev/ttyACM0:z
+    device: /dev/ttyUSB0:/dev/ttyUSB0:z
     env:
       TZ: Europe/Amsterdam
     user: "1000"

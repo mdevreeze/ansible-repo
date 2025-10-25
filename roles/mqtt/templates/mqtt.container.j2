@@ -1,0 +1,14 @@
+[Unit]
+Description=MQTT Mosquitto Container
+After=network-online.target
+
+[Container]
+AutoUpdate=registry
+Image=docker.io/eclipse-mosquitto:2.0.18
+ContainerName=mqtt
+Volume=/var/home/core/mqtt:/mosquitto/config:z
+PublishPort=1883:1883
+PublishPort=9001:9001
+
+[Install]
+WantedBy=multi-user.target default.target

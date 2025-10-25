@@ -1,0 +1,7 @@
+---
+- name: Restart mqtt
+  become: true
+  systemd:
+    name: mqtt
+    state: restarted
+    daemon_reload: true

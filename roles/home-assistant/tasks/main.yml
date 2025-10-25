@@ -1,0 +1,23 @@
+---
+- name: Create home-assistant config folder
+  become: true
+  file:
+    path: "{{ home_assistant_data_dir }}"
+    state: directory
+    owner: "{{ ansible_user | default('core') }}"
+    group: "{{ ansible_user | default('core') }}"
+
+- name: Deploy Quadlet container file
+  become: true
+  template:
+    src: homeassistant.container.j2
+    dest: /etc/containers/systemd/homeassistant.container
+  notify: Restart homeassistant
+
+- name: Enable and start homeassistant systemd unit
+  become: true
+  systemd:
+    daemon_reload: true
+    name: homeassistant
+    state: started
+    enabled: true

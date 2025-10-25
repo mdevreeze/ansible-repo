@@ -8,12 +8,19 @@ frontend:
   # Optional, enables authentication, disabled by default
   auth_token: {{ MQTT_PASSWORD }}
 advanced:
-   ikea_ota_use_test_url: false
+  ikea_ota_use_test_url: false
+  homeassistant_legacy_entity_attributes: false
+  homeassistant_legacy_triggers: false
+  legacy_api: false
+  legacy_availability_payload: false
 mqtt:
   base_topic: zigbee2mqtt
-  server: 'mqtt://michael:{{ MQTT_PASSWORD }}@192.168.1.107:1883'
+  server: 'mqtt://michael:{{ MQTT_PASSWORD }}@192.168.1.21:1883'
 serial:
+#  adapter: ember
   port: /dev/ttyUSB0
+device_options:
+  legacy: false
 devices:
 
   # Kantoor
@@ -81,3 +88,13 @@ devices:
     friendly_name: 'gang-knop'
   '0x680ae2fffe2f342f':
     friendly_name: 'deur-knop'
+
+  # Alarmen en sensoren
+  '0x54ef441001312be5':
+    friendly_name: woonkamer-brandalarm
+  '0x54ef44100131725e':
+    friendly_name: gangboven-brandalarm
+  '0x54ef4410011e1ede':
+    friendly_name: keuken-watersensor
+  '0x54ef441000efd30c':
+    friendly_name: gangboven-watersensor

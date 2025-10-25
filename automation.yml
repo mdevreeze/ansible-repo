@@ -2,14 +2,7 @@
   become: true
   vars_files:
     - vars/secrets.yml
-  vars:
-    TUNNEL_NAME: automation
-    TUNNEL_SERVICES:
-      - { port: 8123, hostname: "{{ HOMEASSISTANT_HOST }}" }
-      - { port: 1880, hostname: "{{ NODERED_HOST }}" }
   roles:
-    - base
-    - podman
     - mqtt
-    - node-red
     - zigbee2mqtt
+    - home-assistant

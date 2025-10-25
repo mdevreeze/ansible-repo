@@ -1,50 +1,36 @@
 - name: Create zigbee2mqtt config folder
   become: true
   file:
-    path: /app/zigbee2mqtt/
+    path: "{{ zigbee2mqtt_data_dir }}"
     state: directory
-    owner: "1000"
-    group: "1000"
-- name: Open firewall ports
-  become: true
-  ansible.posix.firewalld:
-    port: "20000/tcp"
-    state: enabled
+    owner: "{{ zigbee2mqtt_user }}"
+    group: "{{ zigbee2mqtt_user }}"
+
 - name: Apply config
+  become: true
   template:
     src: configuration.yaml.j2
-    dest: /app/zigbee2mqtt/configuration.yaml
-- name: Set permissions /dev/ttyUSB0
+    dest: "{{ zigbee2mqtt_data_dir }}/configuration.yaml"
+  notify: Restart zigbee2mqtt
+
+- name: Set permissions {{ zigbee2mqtt_device }}
+  become: true
   ansible.builtin.file:
-    path: /dev/ttyUSB0
+    path: "{{ zigbee2mqtt_device }}"
     state: file
     mode: '0777'
-- name: Copy systemd unit file
-  copy:
-    src: zigbee2mqtt.service
-    dest: /etc/systemd/system/zigbee2mqtt.service
-- name: Create zigbee2mqtt container
+
+- name: Deploy Quadlet container file
   become: true
-  containers.podman.podman_container:
-    name: zigbee2mqtt
-    image: docker.io/koenkk/zigbee2mqtt:1.40.2
-    restart_policy: always
-    state: present
-    device: /dev/ttyUSB0:/dev/ttyUSB0:z
-    env:
-      TZ: Europe/Amsterdam
-    user: "1000"
-    recreate: yes
-    privileged: true
-    volume:
-      - /app/zigbee2mqtt:/app/data:z
-      - /run/udev:/run/udev:ro
-    ports:
-      - "20000:20000"
+  template:
+    src: zigbee2mqtt.container.j2
+    dest: /etc/containers/systemd/zigbee2mqtt.container
+  notify: Restart zigbee2mqtt
+
 - name: Enable and start zigbee2mqtt systemd unit
   become: true
   systemd:
-    daemon_reload: yes
+    daemon_reload: true
     name: zigbee2mqtt
     state: started
-    enabled: yes
+    enabled: true

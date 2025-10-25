@@ -1,0 +1,17 @@
+[Unit]
+Description=Zigbee2mqtt Container
+After=network-online.target
+
+[Container]
+AutoUpdate=registry
+Image={{ zigbee2mqtt_image }}:{{ zigbee2mqtt_version }}
+ContainerName=zigbee2mqtt
+AddDevice={{ zigbee2mqtt_device }}:{{ zigbee2mqtt_device }}
+Environment=TZ={{ zigbee2mqtt_timezone }}
+User={{ zigbee2mqtt_user }}
+Volume={{ zigbee2mqtt_data_dir }}:/app/data:z
+Volume=/run/udev:/run/udev:ro
+PublishPort={{ zigbee2mqtt_port }}:{{ zigbee2mqtt_port }}
+
+[Install]
+WantedBy=multi-user.target default.target

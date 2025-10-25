@@ -1,0 +1,14 @@
+[Unit]
+Description=Home Assistant Container
+After=network-online.target
+
+[Container]
+AutoUpdate=registry
+Image={{ home_assistant_image }}:{{ home_assistant_version }}
+ContainerName=homeassistant
+Network={{ home_assistant_network_mode }}
+Environment=TZ={{ home_assistant_timezone }}
+Volume={{ home_assistant_data_dir }}:/config:z
+
+[Install]
+WantedBy=multi-user.target default.target

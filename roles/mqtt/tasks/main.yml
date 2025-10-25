@@ -1,44 +1,36 @@
 - name: Create mqtt config folder
+  become: true
   file:
-    path: /app/mqtt
+    path: /var/home/core/mqtt
     state: directory
     owner: "1883"
     group: "1883"
+
 - name: Copy mosquitto config
+  become: true
   copy:
     src: mosquitto.conf
-    dest: /app/mqtt/mosquitto.conf
+    dest: /var/home/core/mqtt/mosquitto.conf
     owner: "1883"
     group: "1883"
+
 - name: mosquitto auth
+  become: true
   template:
     src: auth.txt.j2
-    dest: /app/mqtt/auth.txt
-- name: Open firewall ports
-  ansible.posix.firewalld:
-    port: "{{ item }}"
-    state: enabled
-  loop:
-    - 1883/tcp
-    - 9001/tcp
-- name: Copy systemd unit file
-  copy:
-    src: mqtt.service
-    dest: /etc/systemd/system/mqtt.service
-- name: Create mqtt container
-  containers.podman.podman_container:
-    name: mqtt
-    state: present
-    image: docker.io/eclipse-mosquitto:2.0.18
-    recreate: yes
-    volume:
-      - /app/mqtt:/mosquitto/config:z
-    ports:
-      - 1883:1883
-      - 9001:9001
+    dest: /var/home/core/mqtt/auth.txt
+
+- name: Deploy Quadlet container file
+  become: true
+  template:
+    src: mqtt.container.j2
+    dest: /etc/containers/systemd/mqtt.container
+  notify: Restart mqtt
+
 - name: Enable and start mqtt systemd unit
+  become: true
   systemd:
-    daemon_reload: yes
-    name: mqtt 
+    daemon_reload: true
+    name: mqtt
     state: started
-    enabled: yes
+    enabled: true

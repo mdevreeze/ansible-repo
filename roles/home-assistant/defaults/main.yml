@@ -1,0 +1,7 @@
+---
+home_assistant_version: "2025.10.4"
+home_assistant_image: "ghcr.io/home-assistant/home-assistant"
+home_assistant_data_dir: "/var/homeassistant/config"
+home_assistant_port: "8123"
+home_assistant_timezone: "Europe/Amsterdam"
+home_assistant_network_mode: "host"

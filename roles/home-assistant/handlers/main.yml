@@ -1,0 +1,7 @@
+---
+- name: Restart homeassistant
+  become: true
+  systemd:
+    name: homeassistant
+    state: restarted
+    daemon_reload: true

@@ -6,7 +6,7 @@ After=network-online.target
 AutoUpdate=registry
 Image={{ zigbee2mqtt_image }}:{{ zigbee2mqtt_version }}
 ContainerName=zigbee2mqtt
-AddDevice={{ zigbee2mqtt_device }}:{{ zigbee2mqtt_device }}
+AddDevice={{ zigbee2mqtt_device }}:{{ zigbee2mqtt_device }}:z
 Environment=TZ={{ zigbee2mqtt_timezone }}
 User={{ zigbee2mqtt_user }}
 Volume={{ zigbee2mqtt_data_dir }}:/app/data:z

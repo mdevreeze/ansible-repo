@@ -6,3 +6,5 @@
     - mqtt
     - zigbee2mqtt
     - home-assistant
+    - cloudflared
+    - nextcloud-aio

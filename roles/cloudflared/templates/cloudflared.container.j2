@@ -1,0 +1,17 @@
+[Unit]
+Description=Cloudflared Tunnel Container
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+AutoUpdate=registry
+Image={{ cloudflared_image }}:{{ cloudflared_version }}
+ContainerName=cloudflared
+Volume={{ cloudflared_data_dir }}:/etc/cloudflared:z
+Volume={{ cloudflared_log_dir }}:/var/log/cloudflared:z
+Network=host
+User={{ cloudflared_user }}
+Exec=tunnel --no-autoupdate run --token {{ cloudflared_tunnel_token }} 
+
+[Install]
+WantedBy=multi-user.target default.target

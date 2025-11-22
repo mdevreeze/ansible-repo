@@ -1,0 +1,25 @@
+[Unit]
+Description=Nextcloud All in One Container (Docker)
+After=network-online.target docker.service
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10s
+ExecStartPre=/usr/bin/docker pull {{ nextcloud_aio_image }}:{{ nextcloud_aio_version }}
+ExecStart=/usr/bin/docker run --rm \
+  --name nextcloud-aio-mastercontainer \
+  --volume {{ nextcloud_aio_volume }}:/mnt/docker-aio-config \
+  --volume {{ nextcloud_aio_docker_socket }}:/var/run/docker.sock:ro \
+  --publish {{ nextcloud_aio_port }}:8080 \
+  --env APACHE_IP_BINDING={{ nextcloud_aio_apache_ip_binding }} \
+  --env APACHE_PORT={{ nextcloud_aio_apache_port }} \
+  --privileged \
+  {{ nextcloud_aio_image }}:{{ nextcloud_aio_version }}
+ExecStop=/usr/bin/docker stop nextcloud-aio-mastercontainer
+SyslogIdentifier=nextcloud-aio
+
+[Install]
+WantedBy=multi-user.target

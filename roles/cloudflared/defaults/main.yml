@@ -1,0 +1,13 @@
+---
+# Container image and version
+cloudflared_version: "2025.11.1"
+cloudflared_image: "docker.io/cloudflare/cloudflared"
+
+# Service configuration
+cloudflared_user: "1000"
+cloudflared_data_dir: "/var/lib/cloudflared"
+cloudflared_log_dir: "/var/log/cloudflared"
+
+# Tunnel configuration
+cloudflared_tunnel_id: "66e70bed-095c-4967-8364-50ba532a5fbf"
+cloudflared_tunnel_token: "{{ CLOUDFLARE_TOKEN }}"

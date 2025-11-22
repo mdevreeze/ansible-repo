@@ -1,0 +1,19 @@
+---
+# Container image and version
+nextcloud_aio_version: "latest"
+nextcloud_aio_image: "docker.io/nextcloud/all-in-one"
+
+# Service configuration
+nextcloud_aio_user: "root"
+nextcloud_aio_data_dir: "/var/lib/nextcloud-aio"
+nextcloud_aio_docker_socket: "/var/run/docker.sock"
+
+# Port configuration
+nextcloud_aio_port: "8080"
+
+# Volume name for Docker (used by Nextcloud AIO)
+nextcloud_aio_volume: "nextcloud_aio_mastercontainer"
+
+# Environment variables
+nextcloud_aio_apache_ip_binding: "0.0.0.0"
+nextcloud_aio_apache_port: "11000"

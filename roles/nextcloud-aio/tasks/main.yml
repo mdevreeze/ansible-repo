@@ -1,0 +1,25 @@
+---
+- name: Create nextcloud-aio data directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ nextcloud_aio_data_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Deploy nextcloud-aio systemd service file
+  become: true
+  ansible.builtin.template:
+    src: nextcloud-aio.service.j2
+    dest: /etc/systemd/system/nextcloud-aio.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart nextcloud-aio
+
+- name: Enable and start nextcloud-aio service
+  become: true
+  ansible.builtin.systemd_service:
+    name: nextcloud-aio
+    enabled: true
+    state: started
+    daemon_reload: true

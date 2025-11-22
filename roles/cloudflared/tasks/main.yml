@@ -1,0 +1,32 @@
+---
+- name: Create cloudflared directories
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ cloudflared_user }}"
+    group: "{{ cloudflared_user }}"
+    mode: "0750"
+  loop:
+    - "{{ cloudflared_data_dir }}"
+    - "{{ cloudflared_log_dir }}"
+  notify: Restart cloudflared
+
+
+- name: Deploy cloudflared Quadlet container file
+  become: true
+  ansible.builtin.template:
+    src: cloudflared.container.j2
+    dest: /etc/containers/systemd/cloudflared.container
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart cloudflared
+
+- name: Enable and start cloudflared service
+  become: true
+  ansible.builtin.systemd_service:
+    name: cloudflared
+    enabled: true
+    state: started
+    daemon_reload: true

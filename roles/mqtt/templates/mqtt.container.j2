@@ -4,7 +4,7 @@ After=network-online.target
 
 [Container]
 AutoUpdate=registry
-Image=docker.io/eclipse-mosquitto:2.0.18
+Image=docker.io/eclipse-mosquitto:2.0.22
 ContainerName=mqtt
 Volume=/var/home/core/mqtt:/mosquitto/config:z
 PublishPort=1883:1883

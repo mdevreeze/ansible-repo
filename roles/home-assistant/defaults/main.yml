@@ -1,5 +1,5 @@
 ---
-home_assistant_version: "2025.10.4"
+home_assistant_version: "2026.2.3"
 home_assistant_image: "ghcr.io/home-assistant/home-assistant"
 home_assistant_data_dir: "/var/homeassistant/config"
 home_assistant_port: "8123"

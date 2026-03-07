@@ -1,0 +1,16 @@
+---
+# Container image and version
+tailscale_version: "v1.80.3"
+tailscale_image: "ghcr.io/tailscale/tailscale"
+
+# State directory (persists node identity and auth across restarts)
+tailscale_state_dir: "/var/lib/tailscale"
+
+# Tailscale hostname (how this machine appears in your tailnet)
+tailscale_hostname: "automation"
+
+# Auth key (from secrets)
+tailscale_auth_key: "{{ TAILSCALE_AUTH_KEY }}"
+
+# Enable Tailscale SSH
+tailscale_ssh: true

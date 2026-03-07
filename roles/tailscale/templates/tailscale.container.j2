@@ -1,0 +1,32 @@
+[Unit]
+Description=Tailscale VPN Container
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+AutoUpdate=registry
+Image={{ tailscale_image }}:{{ tailscale_version }}
+ContainerName=tailscale
+Network=host
+
+# Tailscale needs TUN device and network capabilities
+AddDevice=/dev/net/tun
+AddCapability=NET_ADMIN NET_RAW
+
+# Persist node identity and auth state
+Volume={{ tailscale_state_dir }}:/var/lib/tailscale:z
+
+# Auth key and configuration via environment variables
+Environment=TS_AUTHKEY={{ tailscale_auth_key }}
+Environment=TS_HOSTNAME={{ tailscale_hostname }}
+Environment=TS_STATE_DIR=/var/lib/tailscale
+{% if tailscale_ssh %}
+Environment=TS_EXTRA_ARGS=--ssh
+{% endif %}
+
+[Service]
+Restart=always
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target default.target

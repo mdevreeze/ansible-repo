@@ -1,8 +1,7 @@
 [Unit]
 Description=Claude Code Container
-After=network-online.target claude-code-build.service
+After=network-online.target
 Wants=network-online.target
-Requires=claude-code-build.service
 
 [Container]
 Image={{ claude_code_image }}:{{ claude_code_version }}
@@ -19,12 +18,11 @@ EnvironmentFile={{ claude_code_env_file }}
 NoNewPrivileges=true
 DropCapability=all
 
-# Keep stdin open so you can attach with: podman attach claude-code
-# The container stays running idle between sessions
-Exec=claude --dangerously-skip-permissions
+# tmux keeps the container alive; attach with: podman attach claude-code
+# Then run: claude --dangerously-skip-permissions
+PodmanArgs=--tty
 
 [Service]
-# Interactive container — restart on failure but don't restart on clean exit
 Restart=on-failure
 RestartSec=10s
 

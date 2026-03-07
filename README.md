@@ -8,6 +8,7 @@ This repository contains Ansible configurations for managing various services ac
 
 - **Home Automation**: Home Assistant with Zigbee2MQTT and MQTT broker
 - **Cloud Connectivity**: Cloudflared tunnel for secure remote access
+- **Remote Access**: Tailscale VPN with SSH for secure phone access
 - **Cloud Storage**: Nextcloud AIO for file synchronization and sharing
 - **Development Environment**: Claude Code deployment
 
@@ -30,8 +31,9 @@ Main playbook targeting the `automation` host group. Deploys all roles in order:
 2. `zigbee2mqtt` - Zigbee bridge (requires mqtt)
 3. `home-assistant` - Home automation (uses host networking)
 4. `cloudflared` - Cloudflare tunnel
-5. `nextcloud-aio` - Nextcloud (Docker-based)
-6. `claude-code` - Claude Code environment
+5. `tailscale` - Tailscale VPN mesh
+6. `nextcloud-aio` - Nextcloud (Docker-based)
+7. `claude-code` - Claude Code environment
 
 ## Roles
 
@@ -41,6 +43,7 @@ Main playbook targeting the `automation` host group. Deploys all roles in order:
 | `zigbee2mqtt` | 20000 | [docs/zigbee2mqtt.md](docs/zigbee2mqtt.md) |
 | `home-assistant` | 8123 (host network) | [docs/home-assistant.md](docs/home-assistant.md) |
 | `cloudflared` | — (host network) | [docs/cloudflared.md](docs/cloudflared.md) |
+| `tailscale` | — (host network) | [docs/tailscale.md](docs/tailscale.md) |
 | `nextcloud-aio` | 8080, 11000 | [docs/nextcloud-aio.md](docs/nextcloud-aio.md) |
 | `claude-code` | — | [docs/claude-code.md](docs/claude-code.md) |
 
@@ -72,6 +75,7 @@ Server configurations in `inventory/`:
    | `MQTT_PASSWORD` | mqtt, zigbee2mqtt |
    | `MQTT_AUTH_STRING` | mqtt |
    | `CLOUDFLARE_TOKEN` | cloudflared |
+   | `TAILSCALE_AUTH_KEY` | tailscale |
    | `ANTHROPIC_API_KEY` | claude-code |
 
 2. **Inventory**: Update inventory files with your server IPs/hostnames
@@ -107,6 +111,7 @@ automation server (192.168.1.21)
 ├── home-assistant           ← Podman Quadlet (host network)
 │   └── :8123
 ├── cloudflared              ← Podman Quadlet (host network)
+├── tailscale                ← Podman Quadlet (host network)
 ├── nextcloud-aio            ← Docker (systemd service)
 │   ├── :8080 (admin)
 │   └── :11000 (web)

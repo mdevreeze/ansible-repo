@@ -7,6 +7,8 @@ RUN apt-get update && apt-get install -y \
     jq \
     python3.11 \
     python3-pip \
+    tmux \
+    xterm \
     unixodbc \
     gnupg2 \
     apt-transport-https \
@@ -27,9 +29,8 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
 # Global Node tools
 RUN npm install -g @anthropic-ai/claude-code typescript tsx pnpm
 
-# dotnet-ef + nuke
-RUN dotnet tool install --global dotnet-ef && \
-    dotnet tool install --global Nuke.GlobalTool
+# dotnet-ef
+RUN dotnet tool install --global dotnet-ef
 ENV PATH="${PATH}:/root/.dotnet/tools"
 
 # Create a non-root user
@@ -40,13 +41,12 @@ USER claude
 ENV PATH="${PATH}:/home/claude/.local/bin:/home/claude/.dotnet/tools:/usr/local/go/bin"
 
 RUN curl https://mise.run | sh && \
-    echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc
+    echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc && \
+    echo 'command -v resize &>/dev/null && eval "$(resize)"' >> ~/.bashrc
 
-# dotnet-ef + nuke for the claude user
-RUN dotnet tool install --global dotnet-ef && \
-    dotnet tool install --global Nuke.GlobalTool
+# dotnet-ef for the claude user
+RUN dotnet tool install --global dotnet-ef
 
 WORKDIR /home/claude/workspace
 
-ENTRYPOINT ["claude"]
-CMD ["--help"]
+ENTRYPOINT ["tmux", "new-session", "-s", "main"]

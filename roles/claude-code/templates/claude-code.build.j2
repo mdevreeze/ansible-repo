@@ -1,0 +1,9 @@
+[Unit]
+Description=Build Claude Code container image
+Wants=network-online.target
+After=network-online.target
+
+[Build]
+ImageTag={{ claude_code_image }}:{{ claude_code_version }}
+File={{ claude_code_build_dir }}/Dockerfile
+SetWorkingDirectory={{ claude_code_build_dir }}

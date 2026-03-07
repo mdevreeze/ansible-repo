@@ -1,0 +1,7 @@
+---
+- name: Restart claude-code
+  become: true
+  ansible.builtin.systemd_service:
+    name: claude-code
+    state: restarted
+    daemon_reload: true

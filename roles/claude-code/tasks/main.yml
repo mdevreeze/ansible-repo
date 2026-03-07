@@ -1,0 +1,74 @@
+---
+- name: Create claude-code config directory
+  become: true
+  ansible.builtin.file:
+    path: /etc/claude-code
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Deploy API key env file
+  become: true
+  ansible.builtin.template:
+    src: env.j2
+    dest: "{{ claude_code_env_file }}"
+    owner: root
+    group: root
+    mode: "0600"
+  notify: Restart claude-code
+
+- name: Create claude-code build directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ claude_code_build_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Deploy Dockerfile to build directory
+  become: true
+  ansible.builtin.copy:
+    src: Dockerfile
+    dest: "{{ claude_code_build_dir }}/Dockerfile"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart claude-code
+
+- name: Deploy claude-code Quadlet build file
+  become: true
+  ansible.builtin.template:
+    src: claude-code.build.j2
+    dest: /etc/containers/systemd/claude-code.build
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart claude-code
+
+- name: Deploy claude-code Quadlet container file
+  become: true
+  ansible.builtin.template:
+    src: claude-code.container.j2
+    dest: /etc/containers/systemd/claude-code.container
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart claude-code
+
+- name: Enable claude-code-build service
+  become: true
+  ansible.builtin.systemd_service:
+    name: claude-code-build
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: Enable claude-code service
+  become: true
+  ansible.builtin.systemd_service:
+    name: claude-code
+    enabled: true
+    state: started
+    daemon_reload: true

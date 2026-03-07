@@ -1,0 +1,16 @@
+---
+# Container image (built locally)
+claude_code_image: "localhost/claude-code"
+claude_code_version: "latest"
+
+# Build context directory on the server
+claude_code_build_dir: "/var/lib/claude-code/build"
+
+# Named volume for the workspace
+claude_code_workspace_volume: "claude-code-workspace"
+
+# User to run as inside the container (matches the non-root user in the Dockerfile)
+claude_code_user: "1000"
+
+# Path to the env file containing ANTHROPIC_API_KEY
+claude_code_env_file: "/etc/claude-code/env"

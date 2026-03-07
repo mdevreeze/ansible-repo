@@ -8,3 +8,4 @@
     - home-assistant
     - cloudflared
     - nextcloud-aio
+    - claude-code

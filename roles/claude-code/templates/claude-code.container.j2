@@ -1,0 +1,32 @@
+[Unit]
+Description=Claude Code Container
+After=network-online.target claude-code-build.service
+Wants=network-online.target
+Requires=claude-code-build.service
+
+[Container]
+Image={{ claude_code_image }}:{{ claude_code_version }}
+ContainerName=claude-code
+User={{ claude_code_user }}
+
+# Workspace persists across sessions; no host filesystem access
+Volume={{ claude_code_workspace_volume }}:/home/claude/workspace:z
+
+# API key from env file (root-only, mode 0600)
+EnvironmentFile={{ claude_code_env_file }}
+
+# Security hardening
+NoNewPrivileges=true
+DropCapability=all
+
+# Keep stdin open so you can attach with: podman attach claude-code
+# The container stays running idle between sessions
+Exec=claude --dangerously-skip-permissions
+
+[Service]
+# Interactive container — restart on failure but don't restart on clean exit
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target default.target

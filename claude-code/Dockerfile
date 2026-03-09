@@ -5,13 +5,17 @@ RUN apt-get update && apt-get install -y \
     curl \
     git \
     jq \
+    bash \
+    locales \
     python3.11 \
     python3-pip \
+    vim \
     tmux \
     xterm \
     unixodbc \
     gnupg2 \
     apt-transport-https \
+    && locale-gen en_US.UTF-8 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Microsoft MSSQL ODBC driver + sqlcmd
@@ -49,4 +53,11 @@ RUN dotnet tool install --global dotnet-ef
 
 WORKDIR /home/claude/workspace
 
-ENTRYPOINT ["tmux", "new-session", "-s", "main"]
+# tmux config: true colour + ASCII-only borders for broad SSH client compatibility
+RUN printf '%s\n' \
+    'set -as terminal-features ",xterm-256color:RGB"' \
+    'set -g default-terminal "tmux-256color"' \
+    'set -g default-shell /bin/bash' \
+    > /home/claude/.tmux.conf
+
+ENTRYPOINT ["tmux", "-u", "new-session", "-s", "main"]

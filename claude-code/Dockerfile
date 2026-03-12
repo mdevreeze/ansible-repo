@@ -15,7 +15,9 @@ RUN apt-get update && apt-get install -y \
     unixodbc \
     gnupg2 \
     apt-transport-https \
-    && locale-gen en_US.UTF-8 \
+    && sed -i '/en_US.UTF-8/s/^# *//' /etc/locale.gen \
+    && locale-gen \
+    && echo 'LANG=en_US.UTF-8' > /etc/default/locale \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ENV LANG=en_US.UTF-8

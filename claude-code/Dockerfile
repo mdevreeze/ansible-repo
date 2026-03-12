@@ -1,11 +1,7 @@
-FROM mcr.microsoft.com/dotnet/sdk:9.0
+FROM mcr.microsoft.com/devcontainers/dotnet:9.0
 
-# System packages
+# Additional system packages (git, curl, jq, bash already included in base)
 RUN apt-get update && apt-get install -y \
-    curl \
-    git \
-    jq \
-    bash \
     locales \
     python3.11 \
     python3-pip \
@@ -14,14 +10,7 @@ RUN apt-get update && apt-get install -y \
     xterm \
     unixodbc \
     gnupg2 \
-    apt-transport-https \
-    && sed -i '/en_US.UTF-8/s/^# *//' /etc/locale.gen \
-    && locale-gen \
-    && echo 'LANG=en_US.UTF-8' > /etc/default/locale \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-ENV LANG=en_US.UTF-8
-ENV LC_ALL=en_US.UTF-8
+    apt-transport-https
 
 # Microsoft MSSQL ODBC driver + sqlcmd
 RUN curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg && \
@@ -42,27 +31,24 @@ RUN npm install -g @anthropic-ai/claude-code typescript tsx pnpm
 RUN dotnet tool install --global dotnet-ef
 ENV PATH="${PATH}:/root/.dotnet/tools"
 
-# Create a non-root user
-RUN useradd -m -s /bin/bash claude
-
-# mise (version manager) — installed as the claude user
-USER claude
-ENV PATH="${PATH}:/home/claude/.local/bin:/home/claude/.dotnet/tools:/usr/local/go/bin"
+# Use the non-root vscode user provided by the devcontainers base image (UID 1000)
+USER vscode
+ENV PATH="${PATH}:/home/vscode/.local/bin:/home/vscode/.dotnet/tools:/usr/local/go/bin"
 
 RUN curl https://mise.run | sh && \
     echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc && \
     echo 'command -v resize &>/dev/null && eval "$(resize)"' >> ~/.bashrc
 
-# dotnet-ef for the claude user
+# dotnet-ef for vscode user
 RUN dotnet tool install --global dotnet-ef
 
-WORKDIR /home/claude/workspace
+WORKDIR /home/vscode/workspace
 
 # tmux config: true colour + ASCII-only borders for broad SSH client compatibility
 RUN printf '%s\n' \
     'set -as terminal-features ",xterm-256color:RGB"' \
     'set -g default-terminal "tmux-256color"' \
     'set -g default-shell /bin/bash' \
-    > /home/claude/.tmux.conf
+    > /home/vscode/.tmux.conf
 
 ENTRYPOINT ["tmux", "-u", "new-session", "-s", "main"]

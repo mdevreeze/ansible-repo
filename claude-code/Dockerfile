@@ -10,7 +10,25 @@ RUN apt-get update && apt-get install -y \
     xterm \
     unixodbc \
     gnupg2 \
-    apt-transport-https
+    apt-transport-https \
+    # Chromium/Playwright dependencies
+    libglib2.0-0 \
+    libnss3 \
+    libatk1.0-0 \
+    libcups2 \
+    libgtk-3-0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxfixes3 \
+    libxrandr2 \
+    libpango-1.0-0 \
+    libasound2 \
+    libdrm2 \
+    libgbm1 \
+    libxshmfence1 \
+    libxkbcommon0 \
+    fonts-liberation \
+    xdg-utils
 
 # Microsoft MSSQL ODBC driver + sqlcmd
 RUN curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg && \

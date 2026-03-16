@@ -1,4 +1,11 @@
 ---
+- name: Pull latest claude-code image
+  become: true
+  containers.podman.podman_image:
+    name: "{{ claude_code_image }}:{{ claude_code_version }}"
+    force: true
+  notify: Restart claude-code
+
 - name: Create claude-code config directory
   become: true
   ansible.builtin.file:

@@ -9,8 +9,8 @@ ContainerName=claude-code
 User={{ claude_code_user }}
 
 # Workspace and auth config persist across container recreations
-Volume={{ claude_code_workspace_volume }}:/home/claude/workspace:z
-Volume=claude-code-config:/home/claude/.claude:z
+Volume={{ claude_code_workspace_volume }}:/home/vscode/workspace:z
+Volume=claude-code-config:/home/vscode/.claude:z
 
 # API key from env file (root-only, mode 0600)
 EnvironmentFile={{ claude_code_env_file }}

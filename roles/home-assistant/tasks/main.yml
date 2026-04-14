@@ -7,6 +7,26 @@
     owner: "{{ ansible_user | default('core') }}"
     group: "{{ ansible_user | default('core') }}"
 
+- name: Deploy Home Assistant configuration
+  become: true
+  template:
+    src: configuration.yaml.j2
+    dest: "{{ home_assistant_data_dir }}/configuration.yaml"
+    owner: "1002"
+    group: "1002"
+    setype: container_file_t
+  notify: Restart homeassistant
+
+- name: Deploy Home Assistant groups
+  become: true
+  template:
+    src: groups.yaml.j2
+    dest: "{{ home_assistant_data_dir }}/groups.yaml"
+    owner: "1002"
+    group: "1002"
+    setype: container_file_t
+  notify: Restart homeassistant
+
 - name: Deploy Quadlet container file
   become: true
   template:

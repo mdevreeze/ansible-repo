@@ -4,10 +4,11 @@ homeassistant:
   status_topic: homeassistant/status
 permit_join: false
 frontend:
+  enabled: true
   # Optional, default 8080
-  port: 20000
+  port: {{ zigbee2mqtt_port }}
   # Optional, default 0.0.0.0
-  # host: 192.168.1.101
+  host: 0.0.0.0
   # Optional, enables authentication, disabled by default
   auth_token: {{ MQTT_PASSWORD }}
 advanced:
@@ -40,11 +41,11 @@ devices:
   '0x8cf681fffe44edfb':
     friendly_name: woonkamer-knop
   '0x9035eafffe26cc55':
-    friendly_name: woonkamer-lamp-1
+    friendly_name: kantoor-lamp-1
   '0x9035eafffe286603':
-    friendly_name: woonkamer-lamp-2
+    friendly_name: kantoor-lamp-2
   '0x9035eafffe2a4ad6':
-    friendly_name: woonkamer-lamp-3
+    friendly_name: kantoor-lamp-3
   '0x847127fffeca84ff':
     friendly_name: woonkamer-aqi
   '0x04cd15fffe7f830e':
@@ -95,6 +96,9 @@ devices:
     friendly_name: keuken-spot0
   '0x001788010fad0375':
     friendly_name: keuken-spot4
+  '0x54ef4410014f22de':
+    friendly_name: keuken-tafel-knop
+
 version: 4
 groups:
   '10':

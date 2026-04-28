@@ -1,0 +1,3 @@
+---
+# Swarm services and the standalone traefik container reconcile in-place via
+# their Ansible modules; no restart handlers are required.

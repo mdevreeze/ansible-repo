@@ -1,0 +1,186 @@
+---
+- name: Verify Docker daemon is reachable
+  become: true
+  ansible.builtin.command: docker info
+  register: dokploy_docker_info
+  changed_when: false
+
+- name: Load br_netfilter kernel module (persisted across reboots)
+  become: true
+  community.general.modprobe:
+    name: br_netfilter
+    state: present
+    persistent: present
+
+- name: Enable bridge netfilter sysctls for Swarm overlay correctness
+  become: true
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: "1"
+    sysctl_file: /etc/sysctl.d/99-dokploy-bridge.conf
+    state: present
+    reload: true
+  loop:
+    - net.bridge.bridge-nf-call-iptables
+    - net.bridge.bridge-nf-call-ip6tables
+
+- name: Initialize Docker Swarm (no-op if already a manager)
+  become: true
+  community.docker.docker_swarm:
+    state: present
+    advertise_addr: "{{ dokploy_advertise_addr }}"
+
+- name: Create dokploy overlay network
+  become: true
+  community.docker.docker_network:
+    name: "{{ dokploy_network_name }}"
+    driver: overlay
+    attachable: true
+    scope: swarm
+    state: present
+
+- name: Create /etc/dokploy and traefik subdirectories
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0777"
+  loop:
+    - "{{ dokploy_data_dir }}"
+    - "{{ dokploy_data_dir }}/traefik"
+    - "{{ dokploy_data_dir }}/traefik/dynamic"
+
+- name: Check if postgres password file exists
+  become: true
+  ansible.builtin.stat:
+    path: "{{ dokploy_postgres_password_file }}"
+  register: dokploy_pg_pw_stat
+
+- name: Generate and persist postgres password (first run only)
+  become: true
+  ansible.builtin.copy:
+    dest: "{{ dokploy_postgres_password_file }}"
+    content: "{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}"
+    owner: root
+    group: root
+    mode: "0600"
+  when: not dokploy_pg_pw_stat.stat.exists
+
+- name: Read postgres password
+  become: true
+  ansible.builtin.slurp:
+    src: "{{ dokploy_postgres_password_file }}"
+  register: dokploy_pg_pw_slurp
+  no_log: true
+
+- name: Create dokploy_postgres_password Docker secret
+  become: true
+  community.docker.docker_secret:
+    name: dokploy_postgres_password
+    data: "{{ dokploy_pg_pw_slurp.content | b64decode }}"
+    state: present
+  no_log: true
+
+- name: Deploy dokploy-postgres swarm service
+  become: true
+  community.docker.docker_swarm_service:
+    name: dokploy-postgres
+    image: "{{ dokploy_postgres_image }}"
+    networks:
+      - name: "{{ dokploy_network_name }}"
+    placement:
+      constraints:
+        - node.role == manager
+    env:
+      POSTGRES_USER: dokploy
+      POSTGRES_DB: dokploy
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+      - secret_name: dokploy_postgres_password
+        filename: /run/secrets/postgres_password
+    mounts:
+      - source: "{{ dokploy_postgres_volume }}"
+        target: /var/lib/postgresql/data
+        type: volume
+
+- name: Deploy dokploy-redis swarm service
+  become: true
+  community.docker.docker_swarm_service:
+    name: dokploy-redis
+    image: "{{ dokploy_redis_image }}"
+    networks:
+      - name: "{{ dokploy_network_name }}"
+    placement:
+      constraints:
+        - node.role == manager
+    mounts:
+      - source: "{{ dokploy_redis_volume }}"
+        target: /data
+        type: volume
+
+- name: Deploy dokploy swarm service
+  become: true
+  community.docker.docker_swarm_service:
+    name: dokploy
+    image: "{{ dokploy_image }}:{{ dokploy_version }}"
+    replicas: 1
+    networks:
+      - name: "{{ dokploy_network_name }}"
+    placement:
+      constraints:
+        - node.role == manager
+    env:
+      ADVERTISE_ADDR: "{{ dokploy_advertise_addr }}"
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+      - secret_name: dokploy_postgres_password
+        filename: /run/secrets/postgres_password
+    mounts:
+      - source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        type: bind
+      - source: "{{ dokploy_data_dir }}"
+        target: /etc/dokploy
+        type: bind
+      - source: "{{ dokploy_app_volume }}"
+        target: /root/.docker
+        type: volume
+    publish:
+      - published_port: "{{ dokploy_app_port }}"
+        target_port: 3000
+        mode: host
+    update_config:
+      order: stop-first
+      parallelism: 1
+
+- name: Wait for Dokploy to generate traefik.yml
+  become: true
+  ansible.builtin.wait_for:
+    path: "{{ dokploy_data_dir }}/traefik/traefik.yml"
+    timeout: 120
+
+- name: Run dokploy-traefik container
+  become: true
+  community.docker.docker_container:
+    name: dokploy-traefik
+    image: "{{ dokploy_traefik_image }}"
+    restart_policy: always
+    networks:
+      - name: "{{ dokploy_network_name }}"
+    published_ports:
+      - "{{ dokploy_http_port }}:80/tcp"
+      - "{{ dokploy_https_port }}:443/tcp"
+      - "{{ dokploy_https_port }}:443/udp"
+    mounts:
+      - source: "{{ dokploy_data_dir }}/traefik/traefik.yml"
+        target: /etc/traefik/traefik.yml
+        type: bind
+        read_only: true
+      - source: "{{ dokploy_data_dir }}/traefik/dynamic"
+        target: /etc/dokploy/traefik/dynamic
+        type: bind
+      - source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        type: bind
+        read_only: true
+    state: started

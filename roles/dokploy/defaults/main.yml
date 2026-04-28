@@ -1,0 +1,25 @@
+---
+# Container images
+dokploy_version: "latest"
+dokploy_image: "dokploy/dokploy"
+dokploy_postgres_image: "postgres:16"
+dokploy_redis_image: "redis:7"
+dokploy_traefik_image: "traefik:v3.6.7"
+
+# Host paths
+dokploy_data_dir: "/etc/dokploy"
+dokploy_postgres_password_file: "/etc/dokploy/.postgres_password"
+
+# Swarm
+dokploy_network_name: "dokploy-network"
+dokploy_advertise_addr: "{{ ansible_default_ipv4.address }}"
+
+# Ports (host bindings)
+dokploy_app_port: 3000
+dokploy_http_port: 80
+dokploy_https_port: 443
+
+# Named volumes
+dokploy_postgres_volume: "dokploy-postgres"
+dokploy_redis_volume: "dokploy-redis"
+dokploy_app_volume: "dokploy"

@@ -11,15 +11,19 @@ This repository contains Ansible configurations for managing various services ac
 - **Remote Access**: Tailscale VPN with SSH for secure phone access
 - **Cloud Storage**: Nextcloud AIO for file synchronization and sharing
 - **Development Environment**: Claude Code deployment
+- **Self-hosted PaaS**: Dokploy on Docker Swarm for one-click app deployments
 
 ## Quick Start
 
 ```bash
-# 1. Clone and configure secrets
+# 1. Install required Ansible collections
+ansible-galaxy collection install -r requirements.yml
+
+# 2. Clone and configure secrets
 cp vars/secrets.template.yml vars/secrets.yml
 # Edit vars/secrets.yml with your values
 
-# 2. Deploy everything to the automation server
+# 3. Deploy everything to the automation server
 ansible-playbook automation.yml
 ```
 
@@ -34,6 +38,7 @@ Main playbook targeting the `automation` host group. Deploys all roles in order:
 5. `tailscale` - Tailscale VPN mesh
 6. `nextcloud-aio` - Nextcloud (Docker-based)
 7. `claude-code` - Claude Code environment
+8. `dokploy` - Self-hosted PaaS (Docker Swarm)
 
 ## Roles
 
@@ -46,6 +51,7 @@ Main playbook targeting the `automation` host group. Deploys all roles in order:
 | `tailscale` | — (host network) | [docs/tailscale.md](docs/tailscale.md) |
 | `nextcloud-aio` | 8080, 11000 | [docs/nextcloud-aio.md](docs/nextcloud-aio.md) |
 | `claude-code` | — | [docs/claude-code.md](docs/claude-code.md) |
+| `dokploy` | 80, 443, 3000 | [docs/dokploy.md](docs/dokploy.md) |
 
 ## Inventory
 
@@ -99,7 +105,7 @@ ansible-playbook automation.yml --check --diff
 
 ## Architecture
 
-All container services use **Podman Quadlet** for systemd integration, meaning containers are managed as regular systemd units. The exception is Nextcloud AIO, which requires Docker due to its architecture.
+Most container services use **Podman Quadlet** for systemd integration, meaning containers are managed as regular systemd units. Nextcloud AIO and Dokploy use Docker — Nextcloud AIO because it manages its own sub-containers, and Dokploy because it requires Docker Swarm.
 
 ```
 automation server (192.168.1.21)
@@ -115,7 +121,12 @@ automation server (192.168.1.21)
 ├── nextcloud-aio            ← Docker (systemd service)
 │   ├── :8080 (admin)
 │   └── :11000 (web)
-└── claude-code              ← Podman Quadlet (built locally)
+├── claude-code              ← Podman Quadlet (built locally)
+└── dokploy                  ← Docker Swarm
+    ├── dokploy              (admin UI :3000)
+    ├── dokploy-postgres     (swarm service)
+    ├── dokploy-redis        (swarm service)
+    └── dokploy-traefik      (:80, :443 — routes deployed apps)
 ```
 
 ## Security
